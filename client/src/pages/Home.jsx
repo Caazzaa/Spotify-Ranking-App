@@ -6,10 +6,8 @@ import '../App.css';
 import { InputGroup, FormControl, Button, Row, Card, Container } from 'react-bootstrap';
 import { useState, useEffect} from 'react';
 
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-
 export default function Home() {
+  console.log(import.meta.env.VITE_CLIENT_ID)
   const {user} = useContext(UserContext)
   const [searchInput, setSearchInput] = useState("")
   const [accessToken, setAccessToken] = useState("")
@@ -21,7 +19,7 @@ export default function Home() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+      body: 'grant_type=client_credentials&client_id=' + import.meta.env.VITE_CLIENT_ID + '&client_secret=' + import.meta.env.VITE_CLIENT_SECRET
     }
     fetch('https://accounts.spotify.com/api/token', authParameters)
       .then(result => result.json())
