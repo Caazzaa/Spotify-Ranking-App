@@ -55,3 +55,33 @@
 .length{
   height: 50%;
 }
+
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  backdrop: transparent;
+}
+
+&.fade-in {
+  opacity: 1;
+  transition: opacity linear 0.01s;
+}
+&.fade-out {
+  opacity: 0;
+  transition: opacity linear 1s;
+}
+
+.image-container {
+  position: relative;
+}
+
+.image-container img {
+  width: 50%;
+  height: auto;
+}
