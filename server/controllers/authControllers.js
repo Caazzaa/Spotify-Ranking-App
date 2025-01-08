@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const List = require('../models/ratings')
 const { hashPassword, comparePassword } = require('../helpers/auth')
 const jwt = require('jsonwebtoken')
 
@@ -36,6 +37,10 @@ const registerUser = async (req, res) => {
             email, 
             password: hashedPassword,
         })
+
+        // const list = await List.create({
+        //     user: user._id,
+        // })
 
         return res.json(user)
 
