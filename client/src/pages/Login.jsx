@@ -3,6 +3,7 @@ import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { InputGroup, FormControl, Button, Row, Card, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import Form from '../components/Form'
 import * as React from 'react';
@@ -51,10 +52,14 @@ export default function Login() {
                           <input className="" type='checkbox' id='remember'/>
                           <label className="ml-2 font-medium text-base" htmlFor='remember'>Remember me!</label>
                       </div>
-                      <button className='font-medium text-base'>Forgot password?</button>
+                      <button className='hover:text-purple-700 font-medium text-base'>Forgot password?</button>
                   </div>
                   <div className='mt-8 flex flex-col gap-y-4'>
                       <button onClick={loginUser} className='hover:bg-purple-800 active:scale-[.98] active:duration-75 transition-all py-3 rounded-xl bg-purple-700 text-white text-lg font-bold'>Login</button>
+                  </div>
+                  <div className='flex items-center mt-4'>
+                  <p className='mx-2'>Don't have an account?</p>
+                  <Link className='hover:text-purple-700 font-medium text-base' to="/register">Create an account</Link>
                   </div>
               </div>
           </div>
