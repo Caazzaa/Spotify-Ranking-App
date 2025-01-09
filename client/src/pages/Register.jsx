@@ -42,7 +42,7 @@ export default function Register() {
             <div>
                 <div>
                     <label className='text-lg font-medium mt-4'>Username</label>
-                    <input className="w-full border-2 border-gray-200 rounded-xl p-3 mt-1 bg-transparent" type='text' placeholder='Username' value={data.username} onChange={(e) => setData({...data, email: e.target.value})} />
+                    <input className="w-full border-2 border-gray-200 rounded-xl p-3 mt-1 bg-transparent" type='text' placeholder='Username' value={data.username} onChange={(e) => setData({...data, username: e.target.value})} />
                 </div>
                 <div>
                     <label className='text-lg font-medium mt-4'>Email</label>
@@ -52,17 +52,10 @@ export default function Register() {
                     <label className='text-lg font-medium mt-4'>Password</label>
                     <input className="w-full border-2 border-gray-200 rounded-xl p-3 mt-1 bg-transparent" type='password' placeholder='Password' value={data.password} onChange={(e) => setData({...data, password: e.target.value})} />
                 </div>
-                <div className='flex justify-between items-center mt-4'>
-                    <div>
-                        <input className="" type='checkbox' id='remember'/>
-                        <label className="ml-2 font-medium text-base" htmlFor='remember'>Remember me!</label>
-                    </div>
-                    <button className='hover:text-purple-700 font-medium text-base'>Forgot password?</button>
-                </div>
-                <div className='mt-8 flex flex-col gap-y-4'>
+                <div className='mt-12 flex flex-col gap-y-4'>
                     <button onClick={registerUser} className='hover:bg-purple-800 active:scale-[.98] active:duration-75 transition-all py-3 rounded-xl bg-purple-700 text-white text-lg font-bold'>Register</button>
                 </div>
-                  <div className='flex items-center mt-4'>
+                  <div className='flex items-center mt-4 mx-12'>
                     <p className='mx-2'>Already have an account?</p>
                     <Link className='hover:text-purple-700 font-medium text-base' to="/login">Login</Link>
                   </div>
@@ -73,16 +66,5 @@ export default function Register() {
 
       </div>
     </div>
-    // <div>
-    //   <form onSubmit={ registerUser }>
-    //     <label>Username</label>
-    //     <input type='text' placeholder='Username' value={data.username} onChange={(e) => setData({...data, username: e.target.value})} />
-    //     <label>Email</label>
-    //     <input type='text' placeholder='Email' value={data.email} onChange={(e) => setData({...data, email: e.target.value})} />
-    //     <label>Password</label>
-    //     <input type='password' placeholder='Password' value={data.password} onChange={(e) => setData({...data, password: e.target.value})} />
-    //     <button type='submit' >Submit</button>
-    //   </form>
-    // </div>
   )
 }
