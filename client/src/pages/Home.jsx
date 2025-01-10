@@ -106,60 +106,56 @@ export default function Home() {
 
 
   return (
-        <div className="flex w-full h-screen">
-          <div className="w-full flex items-center justify-center lg:w-1/6 bg-neutral-900" style={{boxShadow: '0 12px 24px rgba(0,0,0,0.5)'}}>
-        </div>
-          {/* Main body of the page */}
-        <div>
-          <Container>
-            <div>
-              {!!user && (<h1>{user.username}</h1>)}
-            </div>
-            <InputGroup className='mb-3' size='lg'>
-              <FormControl
+    <>
+      <Navbar />
+        <Container>
+          <div>
+            {!!user && (<h1>{user.username}</h1>)}
+          </div>
+          <InputGroup className='mb-3' size='lg'>
+            <FormControl
               placeholder='Search Artist'
-              type='input' 
-              onKeyDown={event => {if(event.key === "Enter") { search() }}}
-              onChange={event => setSearchInput(event.target.value)}
-              />
-              <Button onClick={() => { search() }}>
-                Search
-              </Button>
-            </InputGroup>
-          </Container>
-          <Container>
-            <Row className='mx-2 row row-cols-4'>
-              {albums.map((album, i) => {
-                  return (
-                  <Card key={i} bg='dark' text='white'>
-                    <Card.Img src={album.images[0].url} />
-                    <Card.Body>
+              type='input'
+              onKeyDown={event => { if (event.key === "Enter") { search(); } } }
+              onChange={event => setSearchInput(event.target.value)} />
+            <Button onClick={() => { search(); } }>
+              Search
+            </Button>
+          </InputGroup>
+        </Container>
+        <Container>
+          <Row className='mx-2 row row-cols-4'>
+            {albums.map((album, i) => {
+              return (
+                <Card key={i} bg='dark' text='white'>
+                  <Card.Img src={album.images[0].url} />
+                  <Card.Body>
                     <Card.Title>{album.name}</Card.Title>
                     <Card.Text>{album.artists[0].name}</Card.Text>
                     <Card.Text>{album.release_date}</Card.Text>
                     <Button variant='primary' onClick={() => addToList(album.id)}>Add to List</Button>
                     <Button variant='primary' onClick={() => handleShow(album.id)}>Show Album ID</Button>
-                    </Card.Body>
-                  </Card>
-                  )
-              })}
-              {waiting && (
-                <Modal show={true} backdrop="blur" centered={true} dialogClassName="fade-in-slower">
-                  <Modal.Header>
-                    <Modal.Title>Loading...</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <p>Please wait while we fetch the album details.</p>
-                  </Modal.Body>
-                </Modal>
-              )}
-              <Row className='mx-2 row row-cols-4'>
+                  </Card.Body>
+                </Card>
+              );
+            })}
+            {waiting && (
+              <Modal show={true} backdrop="blur" centered={true} dialogClassName="fade-in-slower">
+                <Modal.Header>
+                  <Modal.Title>Loading...</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <p>Please wait while we fetch the album details.</p>
+                </Modal.Body>
+              </Modal>
+            )}
+            <Row className='mx-2 row row-cols-4'>
               <Modal show={show} onHide={handleClose} backdrop="blur" centered={true} dialogClassName="fade-in-slower">
-                <Modal.Header closeButton style={{ backgroundColor: 'gray' }}> 
-                <div className="image-container">
-                <img src={albumDetails.images && albumDetails.images[0].url} />
-                </div>
-                <Modal.Title>{albumDetails.name}</Modal.Title>
+                <Modal.Header closeButton style={{ backgroundColor: 'gray' }}>
+                  <div className="image-container">
+                    <img src={albumDetails.images && albumDetails.images[0].url} />
+                  </div>
+                  <Modal.Title>{albumDetails.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ backgroundColor: 'gray' }}>
                   <p>Artist: {albumDetails.artists && albumDetails.artists[0].name}</p>
@@ -167,15 +163,14 @@ export default function Home() {
                   <p>Total Tracks: {albumDetails.total_tracks}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                  Close
-                </Button>
+                  <Button variant="secondary" onClick={handleClose}>
+                    Close
+                  </Button>
                 </Modal.Footer>
               </Modal>
-              </Row>
             </Row>
-          </Container>
-      </div>
-    </div>
+          </Row>
+        </Container>
+      </>
   )
 }
