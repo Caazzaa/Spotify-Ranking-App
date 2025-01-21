@@ -1,5 +1,6 @@
 import './App.css'
 import {Routes, Route} from 'react-router-dom'
+import List from './pages/List'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Register from './pages/Register'
@@ -19,6 +20,7 @@ function App() {
         <Route path = '/' element={ <Home /> } />
         <Route path = '/register' element={ <Register /> } />
         <Route path = '/login' element={ <Login /> } />
+        <Route path='/songList' element={ <List />} />
       </Routes>
     </UserContextProvider>
   )
