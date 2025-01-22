@@ -4,7 +4,7 @@ import { UserContext } from '../../context/userContext'
 import '../App.css';
 import Navbar from '../components/Navbar'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { InputGroup, FormControl, Button, Row, Card, Container, CardTitle, Modal } from 'react-bootstrap';
+import { InputGroup, FormControl, Button, Row, Container, CardTitle, Modal } from 'react-bootstrap';
 import { useState, useEffect} from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios'
@@ -66,6 +66,7 @@ export default function Home() {
       .then(data => {
         setAlbums(data.items);
       });
+      console.log(albums);
   }
 
   async function getAlbumDetails(albumID) {
