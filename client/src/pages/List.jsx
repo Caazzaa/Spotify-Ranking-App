@@ -14,143 +14,146 @@ import 'ag-grid-community/styles//ag-grid.css';
 import 'ag-grid-community/styles//ag-theme-quartz.css';
 
 export default function List() {
-    const {user} = useContext(UserContext)
-    const [accessToken, setAccessToken] = useState("")
-    const [list, setList] = useState({})
-    const [albumIDs, setAlbumIDs] = useState([])
-    const [albums, setAlbums] = useState([])
-    const HEADERS = ["Album", "Artist", "Year"];
+  const { user } = useContext(UserContext);
+  const [accessToken, setAccessToken] = useState("");
+  const [list, setList] = useState([]);
+  const [albumIDs, setAlbumIDs] = useState([]);
+  const [albums, setAlbums] = useState([]);
+  const HEADERS = ["Album", "Artist", "Year"];
 
-    useEffect(() => {
-    var authParameters = {
-        method: 'POST', 
-        headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: 'grant_type=client_credentials&client_id=' + import.meta.env.VITE_CLIENT_ID + '&client_secret=' + import.meta.env.VITE_CLIENT_SECRET
-    }
-    fetch('https://accounts.spotify.com/api/token', authParameters)
-        .then(result => result.json())
-        .then(data => setAccessToken(data.access_token))
-    }, [])
-
-    const getUserList = async (e) => {
-      e.preventDefault()
-      try {
-        const { data: list } = await axios.post('/getFromList', { userId: user.id })
-        if (list.error) {
-          toast.error(list.error)
-          console.log(list.error)
-        } else {
-          setList(list)
-          console.log(list)
-        }
-        const albumIDs = list.map(item => item.albumID);
-        setAlbumIDs(albumIDs);
-        console.log(albumIDs);
-      } catch (error) {
-        console.log(error)
-      }
-
-      setAlbums([]);
-    }
-
-    useEffect(() => {
-      const fetchAlbums = async () => {
-        setAlbums([]);
-        for (const albumID of albumIDs) {
-          var album = await fetch('https://api.spotify.com/v1/albums/' + albumID, {
-            headers: {
-              'Authorization': 'Bearer ' + accessToken
-            }
-          })
-            .then(response => response.json())
-            .catch(error => console.log(error));
-
-          if (album) {
-            setAlbums(prevAlbums => [...prevAlbums, album]);
-          }
-        }
-        console.log(albums);
+  // Fetch access token on component mount
+  useEffect(() => {
+      const fetchAccessToken = async () => {
+          const authParameters = {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: 'grant_type=client_credentials&client_id=' + import.meta.env.VITE_CLIENT_ID + '&client_secret=' + import.meta.env.VITE_CLIENT_SECRET
+          };
+          const result = await fetch('https://accounts.spotify.com/api/token', authParameters);
+          const data = await result.json();
+          setAccessToken(data.access_token);
       };
 
-      if (albumIDs.length > 0) {
-        fetchAlbums();
-      }
-    }, [albumIDs, accessToken]);
+      fetchAccessToken();
+  }, []);
 
-
-    useEffect(() => {
+  // Fetch user list and albums when user or accessToken changes
+  useEffect(() => {
       const fetchUserListAndAlbums = async () => {
-      try {
-        const { data: list } = await axios.post('/getFromList', { userId: user.id });
-        if (list.error) {
-        toast.error(list.error);
-        console.log(list.error);
-        } else {
-        setList(list);
-        console.log(list);
-        }
-        const albumIDs = list.map(item => item.albumID);
-        setAlbumIDs(albumIDs);
-        console.log(albumIDs);
-      } catch (error) {
-        console.log(error);
-      }
+          if (!user || !user.id || !accessToken) return;
 
-      setAlbums([]);
+          try {
+              const { data: list } = await axios.post('/getFromList', { userId: user.id });
+              if (list.error) {
+                  toast.error(list.error);
+                  console.log(list.error);
+              } else {
+                  setList(list);
+                  const albumIDs = list.map(item => item.albumID);
+                  setAlbumIDs(albumIDs);
+              }
+          } catch (error) {
+              console.log(error);
+          }
       };
 
-      if (user && user.id) {
       fetchUserListAndAlbums();
-      }
-    }, [user]);
+  }, [accessToken]);
 
-    return (
+  // Fetch album details when albumIDs change
+  useEffect(() => {
+      const fetchAlbums = async () => {
+        if (albumIDs.length === 0 || !accessToken) {
+            console.log("No album IDs or access token available.");
+            return;
+        }
+
+        const validAlbumIDs = albumIDs.filter(id => id && typeof id === 'string');
+        if (validAlbumIDs.length === 0) {
+            console.log("No valid album IDs found.");
+            return;
+        }
+
+        const albumsArray = [];
+        for (let i = 0; i < validAlbumIDs.length; i++) {
+            try {
+                const albumID = validAlbumIDs[i];
+                const response = await fetch(`https://api.spotify.com/v1/albums/${albumID}`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch album ${albumID}: ${response.statusText}`);
+                }
+
+                const album = await response.json();
+                if (album) {
+                    albumsArray.push(album);
+                }
+
+                // Add a delay between requests to avoid rate limiting
+                if (i < validAlbumIDs.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        if (albumsArray.length > 0) {
+            setAlbums(albumsArray);
+        }
+    };
+
+    fetchAlbums();
+}, [albumIDs, accessToken]);
+
+  return (
       <>
-      {/* <table className="w-full min-w-max table-auto text-left">
-      <thead>
-        <tr>
-        {HEADERS.map((head) => (
-          <th
-          key={head}
-          className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
-          >
-            {head}
-          </th>
-        ))}
-        </tr>
-      </thead>
-      <tbody>
-        {albums.map((album, index) => {
-        const isLast = index === albums.length - 1;
-        const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-   
-        return (
-          <tr key={album.name}>
-          <td className={classes}>
-            {album.name}
-          </td>
-          <td className={classes}>
-            {album.artists[0].name}
-          </td>
-          <td className={classes}>
-            {album.release_date}
-          </td>
-          <td className={classes}>
-            Edit
-          </td>
-          </tr>
-        );
-        })}
-      </tbody>
-      </table> */}
-      <Navbar />
-      <Container>
-      <div>
-        {!!user && (<h1>{user.username}</h1>)}
-      </div>
-      </Container>
+          <Navbar />
+          <Container>
+              <div>
+                  {!!user && (<h1>{user.username}</h1>)}
+              </div>
+              <table className="w-full min-w-max table-auto text-left">
+                  <thead>
+                      <tr>
+                          {HEADERS.map((head) => (
+                              <th key={head} className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                                  {head}
+                              </th>
+                          ))}
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {albums.map((album, index) => {
+                          const isLast = index === albums.length - 1;
+                          const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+
+                          return (
+                              <tr key={album.name}>
+                                  <td className={classes}>
+                                      {album.name}
+                                  </td>
+                                  <td className={classes}>
+                                      {album.artists[0].name}
+                                  </td>
+                                  <td className={classes}>
+                                      {album.release_date}
+                                  </td>
+                                  <td className={classes}>
+                                      Edit
+                                  </td>
+                              </tr>
+                          );
+                      })}
+                  </tbody>
+              </table>
+          </Container>
       </>
-    )
+  );
 }

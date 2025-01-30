@@ -29,7 +29,6 @@ const addToList = async (req, res) => {
 const getFromList = async (req, res) => {
     try {
         const { userId } = req.body;
-        console.log(userId);
         const list = await Rating.find({ userID: userId }).select('_id userID albumID review rating');
         if (!list || list.length === 0) {
             return res.json({
