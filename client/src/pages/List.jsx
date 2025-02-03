@@ -80,6 +80,7 @@ export default function List() {
         for (let i = 0; i < validAlbumIDs.length; i++) {
             try {
                 const albumID = validAlbumIDs[i];
+                console.log(`Fetching album ${albumID}...`);
                 const response = await fetch(`https://api.spotify.com/v1/albums/${albumID}`, {
                     headers: {
                         'Authorization': 'Bearer ' + accessToken
@@ -94,12 +95,12 @@ export default function List() {
                 if (album) {
                     albumsArray.push(album);
                 }
-
                 // Add a delay between requests to avoid rate limiting
-                if (i < validAlbumIDs.length - 1) {
-                    await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
+                if (i > validAlbumIDs.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 300000)); // 500ms delay
                 }
             } catch (error) {
+                console.log(albumsArray);
                 console.error(error);
             }
         }
@@ -110,7 +111,7 @@ export default function List() {
     };
 
     fetchAlbums();
-}, [albumIDs, accessToken]);
+}, [albumIDs]);
 
   return (
       <>
