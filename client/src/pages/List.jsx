@@ -146,9 +146,6 @@ export default function List() {
                                   <td className={classes}>
                                       {album.release_date}
                                   </td>
-                                  <td className={classes}>
-                                      Edit
-                                  </td>
                               </tr>
                           );
                       })}
