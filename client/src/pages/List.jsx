@@ -14,12 +14,14 @@ import 'ag-grid-community/styles//ag-grid.css';
 import 'ag-grid-community/styles//ag-theme-quartz.css';
 
 export default function List() {
-  const { user } = useContext(UserContext);
-  const [accessToken, setAccessToken] = useState("");
-  const [list, setList] = useState([]);
-  const [albumIDs, setAlbumIDs] = useState([]);
-  const [albums, setAlbums] = useState([]);
-  const HEADERS = ["Album", "Artist", "Year"];
+    const { user } = useContext(UserContext);
+    const [accessToken, setAccessToken] = useState("");
+    const [list, setList] = useState([]);
+    const [albumIDs, setAlbumIDs] = useState([]);
+    const [albums, setAlbums] = useState([]);
+    const [rating, setRating] = useState([]);
+    const [review, setReview] = useState([]);
+    const HEADERS = ["", "Album", "Artist", "Year", "Rating", "Review"];
 
   // Fetch access token on component mount
   useEffect(() => {
@@ -50,9 +52,14 @@ export default function List() {
                   toast.error(list.error);
                   console.log(list.error);
               } else {
-                  setList(list);
-                  const albumIDs = list.map(item => item.albumID);
-                  setAlbumIDs(albumIDs);
+                setList(list);
+                console.log(list);
+                const albumIDs = list.map(item => item.albumID);
+                const rating = list.map(item => item.rating);
+                const review = list.map(item => item.review);
+                setAlbumIDs(albumIDs);
+                setRating(rating);
+                setReview(review);
               }
           } catch (error) {
               console.log(error);
@@ -106,7 +113,12 @@ export default function List() {
         }
 
         if (albumsArray.length > 0) {
+            for(const album of albumsArray) {
+                album.rating = rating[albumsArray.indexOf(album)];
+                album.review = review[albumsArray.indexOf(album)];
+            }
             setAlbums(albumsArray);
+            console.log(albumsArray);
         }
     };
 
@@ -136,17 +148,26 @@ export default function List() {
                           const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
                           return (
-                              <tr key={album.name}>
-                                  <td className={classes}>
-                                      {album.name}
-                                  </td>
-                                  <td className={classes}>
-                                      {album.artists[0].name}
-                                  </td>
-                                  <td className={classes}>
-                                      {album.release_date}
-                                  </td>
-                              </tr>
+                            <tr key={album.name}>
+                                <td className={classes}>
+                                    <img src={album.images[2].url} alt={album.name} />
+                                </td>
+                                <td className={classes}>
+                                    {album.name}
+                                </td>
+                                <td className={classes}>
+                                    {album.artists[0].name}
+                                </td>
+                                <td className={classes}>
+                                    {album.release_date}
+                                </td>
+                                <td className={classes}>
+                                    {album.rating}
+                                </td>
+                                <td className={classes}>
+                                    {album.review}
+                                </td>
+                            </tr>
                           );
                       })}
                   </tbody>
